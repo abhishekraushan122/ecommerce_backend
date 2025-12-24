@@ -16,6 +16,8 @@ export const getProduct = async (req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id);
     if (!product) return res.status(404).json({ message: "Product not found" });
+    product.views += 1;
+    await product.save();
     res.json(product);
   } catch (err) {
     res.status(500).json({ message: "Error", error: err.message });
@@ -115,6 +117,18 @@ export const deleteProduct = async (req, res) => {
       message: "Error deleting product",
       error: err.message
     });
+  }
+};
+
+export const getTrendingProducts = async (req, res) => {
+  try {
+    const products = await Product.find()
+      .sort({ sold: -1, views: -1, createdAt: -1 })
+      .limit(8);
+
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching trending products" });
   }
 };
 
