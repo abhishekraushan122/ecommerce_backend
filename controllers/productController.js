@@ -134,9 +134,11 @@ export const getTrendingProducts = async (req, res) => {
 
 export const getBestSellers = async (req, res) => {
   try {
-    const products = await Product.find()
-      .sort({ sold: -1 })   
-      .limit(8);            // show top 8
+   const products = await Product.find({
+      sold: { $gt: 0 }   
+    })
+      .sort({ sold: -1 })  
+      .limit(8);            
 
     res.json(products);
   } catch (err) {
